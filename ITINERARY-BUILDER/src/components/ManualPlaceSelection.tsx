@@ -21,7 +21,7 @@ import { v4 as uuidv4 } from "uuid";
 import "./ManualPlaceSelection.css";
 
 
-import MainPic from "../assets/MainPic.jpg";
+
 import abhaImg from "../assets/AbhaClean.jpg";
 import alulaImg from "../assets/AlUlaClean.jpg";
 import dammamImg from "../assets/dammam1.jpg";
@@ -99,7 +99,7 @@ const ManualPlaceSelection: React.FC = () => {
   }, [selectedCity, selectedType]);
 
   const selectedBackground = selectedCity && cityBackgrounds[selectedCity];
-
+  const MainPic = "../assets/MainPic.jpg";
   useEffect(() => {
     const root = document.querySelector('.manual-place-page') as HTMLElement;
     if (root) {
