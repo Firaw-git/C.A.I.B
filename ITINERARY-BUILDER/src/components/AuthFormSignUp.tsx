@@ -6,18 +6,20 @@ import "./AuthFormSignUp.css";
 
 const AuthFormSignUp: React.FC = () => {
   const navigate = useNavigate();
-  const [fullName, setFullName]     = useState("");
-  const [email, setEmail]           = useState("");
-  const [password, setPassword]     = useState("");
-  const [confirm, setConfirm]       = useState("");
-  const [error, setError]           = useState<string | null>(null);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleSignUp = async () => {
     setError(null);
-    if (!fullName.trim() || !email.trim() || !password) {
+
+    if (!fullName.trim() || !email.trim() || !password || !confirm.trim()) {
       setError("All fields are required.");
       return;
     }
+
     if (password !== confirm) {
       setError("Passwords do not match.");
       return;
@@ -28,14 +30,21 @@ const AuthFormSignUp: React.FC = () => {
       password,
       options: {
         data: {
-          full_name: fullName
-        }
-      }
+          full_name: fullName,
+        },
+        emailRedirectTo:
+          import.meta.env.MODE === "development"
+            ? "http://localhost:5173/"
+            : "https://c-a-i-b.vercel.app/",
+      },
     });
+
     if (error) {
       setError(error.message);
     } else {
-      navigate("/ItinerarySelectionPage");
+      // User must verify their email; Supabase sends the confirmation email
+      alert("Check your email to confirm your account.");
+      navigate("/LoginPage");
     }
   };
 

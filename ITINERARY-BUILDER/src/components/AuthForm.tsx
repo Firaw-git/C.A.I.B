@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabaseConfig";
 import "./AuthForm.css";
 
 const AuthForm: React.FC = () => {
-  const [email, setEmail]       = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError]       = useState<string | null>(null);
-  const [loading, setLoading]   = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Check session on mount
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) navigate("/ItinerarySelectionPage");
@@ -18,27 +18,46 @@ const AuthForm: React.FC = () => {
     });
   }, [navigate]);
 
+  // Email/password login
   const handleSignIn = async () => {
+    setLoading(true);
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) setError(error.message);
-    else navigate("/ItinerarySelectionPage");
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (session) {
+        navigate("/ItinerarySelectionPage");
+      } else {
+        setError("Login succeeded but session not found.");
+      }
+
+      setLoading(false);
+    }
   };
 
+  // Google OAuth login with redirect to correct domain
   const handleGoogleSignIn = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({ provider: "google" });
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo:
+          import.meta.env.MODE === "development"
+            ? "http://localhost:5173/"
+            : "https://c-a-i-b.vercel.app/"
+      }
+    });
+
     if (error) setError(error.message);
   };
 
   if (loading) return <p className="auth-loading">Loading...</p>;
 
   return (
-    // <div className="login-page">
-    //   <header className="login-header">
-    //     <h1 className="login-title">Login Page</h1>
-    //   </header>
-
-      // {/* Display the places in explore mode (read-only) */}
-      <div className="auth-container">
+    <div className="auth-container">
       <h2 className="auth-heading">Welcome Back</h2>
       {error && <p className="auth-error">{error}</p>}
 
@@ -74,12 +93,6 @@ const AuthForm: React.FC = () => {
         </span>
       </p>
     </div>
-    // </div>
-
-
-
-
-
   );
 };
 
