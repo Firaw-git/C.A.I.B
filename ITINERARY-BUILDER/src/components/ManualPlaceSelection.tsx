@@ -20,6 +20,8 @@ import { supabase } from "../components/supabaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import "./ManualPlaceSelection.css";
 
+
+import MainPic from "../assets/MainPic.jpg";
 import abhaImg from "../assets/AbhaClean.jpg";
 import alulaImg from "../assets/AlUlaClean.jpg";
 import dammamImg from "../assets/dammam1.jpg";
@@ -104,7 +106,7 @@ const ManualPlaceSelection: React.FC = () => {
       if (selectedBackground) {
         root.style.setProperty('--background-image', `url(${selectedBackground})`);
       } else {
-        root.style.setProperty('--background-image', `url(/src/assets/MainPic.jpg)`);
+        root.style.setProperty('--background-image', `url(${MainPic})`);
       }
     }
   }, [selectedBackground]);
