@@ -10,8 +10,10 @@ export default function HomePage() {
   const [isFinished, setIsFinished] = useState(false);
 
   useEffect(() => {
-    let index = 0;
-    let timeoutId: ReturnType<typeof setTimeout>; // correct typing
+    let index = 1; // start from second character
+    let timeoutId: ReturnType<typeof setTimeout>;
+  
+    setTypedText(fullText.charAt(0)); // instantly type first character
   
     const type = () => {
       if (index < fullText.length) {
@@ -23,9 +25,9 @@ export default function HomePage() {
       }
     };
   
-    type(); // start typing
+    timeoutId = setTimeout(type, 100);
   
-    return () => clearTimeout(timeoutId); // cleanup if component unmounts
+    return () => clearTimeout(timeoutId);
   }, []);
   
   
