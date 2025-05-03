@@ -10,14 +10,12 @@ export default function HomePage() {
   const [isFinished, setIsFinished] = useState(false);
 
   useEffect(() => {
-    let index = 1; // start from second character
+    let index = 0;
     let timeoutId: ReturnType<typeof setTimeout>;
   
-    setTypedText(fullText.charAt(0)); // instantly type first character
-  
     const type = () => {
-      if (index < fullText.length) {
-        setTypedText((prev) => prev + fullText.charAt(index));
+      if (index <= fullText.length) {
+        setTypedText(fullText.slice(0, index)); // ensures no skipped characters
         index++;
         timeoutId = setTimeout(type, 100);
       } else {
@@ -25,9 +23,9 @@ export default function HomePage() {
       }
     };
   
-    timeoutId = setTimeout(type, 100);
+    type(); // Start typing
   
-    return () => clearTimeout(timeoutId);
+    return () => clearTimeout(timeoutId); // Cleanup on unmount
   }, []);
   
   
